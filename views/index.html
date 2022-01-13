@@ -3,7 +3,7 @@ Dummy App {{ welcomeMsg }}
 <div id="app" />
 
 <template id="template">
-    <div v-for="item in items" :item="item">{{item}}</div>
+    <div v-for="item in items" :item="item">[[ item ]]</div>
 </template>
 
 <script src="/vue"></script>
@@ -18,6 +18,9 @@ Dummy App {{ welcomeMsg }}
             return {
                 items: ["a", "b", "c"]
             }
+        },
+        compilerOptions: {
+            delimiters: ["[[", "]]"]
         },
         template: document.getElementById("template").innerHTML
     }
