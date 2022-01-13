@@ -62,7 +62,15 @@ function createApp(name, token){
 }
 
 function delApp(name, token){
-    del(`apps/${name}`, undefined, token).then(json => console.log(json))
+    return new Promise(resolve => {
+        del(`apps/${name}`, undefined, token).then(json => {
+            if(require.main === module){
+                console.log(json)
+            }
+
+            resolve(json)
+        })
+    })
 }
 
 function setConfig(name, configVars, token){
@@ -134,6 +142,7 @@ if (require.main !== module){
         getApps,
         getAllTokens,
         getAllApps,
+        delApp,
     }    
 }else{
     console.log("heroku command")

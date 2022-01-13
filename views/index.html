@@ -52,6 +52,7 @@
             <td>[[ app.created_at ]]</td>
             <td>[[ app.updated_at ]]</td>
             <td>[[ app.region.name ]]</td>
+            <td><button v-on:click="delapp(app)">Delete</button></td>
             <!--<td><pre>[[ app ]]</pre></td>-->
         </tr>
     </table>
@@ -96,6 +97,20 @@
             getAllApps(){
                 return new Promise(resolve => {
                     get("/allapps").then(json => resolve(json))
+                })
+            },
+            delApp(name, token){
+                return new Promise(resolve => {
+                    post("/delapp", {name, token}).then(json => resolve(json))
+                })
+            },
+            delapp(app){
+                this.delApp(app.name, app.herokuToken).then(result => {
+                    console.log(result)
+
+                    this.getAllApps().then(apps => {
+                        this.apps = apps
+                    })
                 })
             },
         },
