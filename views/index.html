@@ -45,7 +45,7 @@
             <td>Updated At</td>
             <td>Region</td>
         </tr>
-        <tr v-for="app in apps">
+        <tr v-for="app in apps" :style="`background-color: ${app.bckg};`">
             <td>[[ app.herokuName ]]</td>
             <td>[[ app.name ]]</td>
             <td>[[ app.id ]]</td>
@@ -103,6 +103,14 @@
             return {
                 apps: [],
                 alltokens: {},
+                appbckgs: [
+                    "#faa",
+                    "#aea",
+                    "#ccf",
+                    "#eea",
+                    "#f9f",
+                    "#aee"
+                ],
             }
         },
         mounted(){
@@ -111,6 +119,7 @@
 
                 Promise.all(Object.keys(this.alltokens.tokensByToken).map(token => this.getApps(token))).then(appss => {
                     this.apps = appss.flat().map(app => {
+                        app.bckg = this.appbckgs[Object.keys(this.alltokens.tokensByToken).findIndex(token => app.herokuToken === token)]
                         return app
                     })
                 })
