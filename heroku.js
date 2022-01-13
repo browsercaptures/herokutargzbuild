@@ -69,7 +69,7 @@ function setConfig(name, configVars){
 function getApps(){
     return new Promise((resolve=>{
         get("apps").then(json => {
-            if(require.main !== module){
+            if(require.main === module){
                 console.log(json)
             }
             resolve(json)
@@ -89,6 +89,10 @@ function buildApp(name, url){
 
 if (require.main !== module){
     console.log("heroku module")
+
+    module.exports = {
+        getApps
+    }    
 }else{
     console.log("heroku command")
 
@@ -118,10 +122,4 @@ if (require.main !== module){
     }else{
         console.error("unknown command")
     }
-}
-
-
-
-module.exports = {
-    getApps
 }

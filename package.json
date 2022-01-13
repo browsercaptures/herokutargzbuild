@@ -23,6 +23,7 @@
   "nodemonConfig": {
     "watch": [
       "server.js",
+      "heroku.js",
       "views/index.html"
     ]
   }

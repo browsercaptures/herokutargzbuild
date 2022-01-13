@@ -5,7 +5,6 @@ const PORT = parseInt(process.env.PORT || "3000")
 const createdAt = Date.now()
 
 const nunjucks = require("nunjucks")
-const res = require('express/lib/response')
 
 const { getApps } = require("./heroku")
 
@@ -34,5 +33,5 @@ app.get("/apps", (req,res)=>{
 })
 
 app.listen(PORT, () => {
-  console.log(`Example app listening at http://localhost:${PORT}`)
+  console.log(`App listening at http://localhost:${PORT}`)
 })
