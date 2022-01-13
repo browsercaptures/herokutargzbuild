@@ -6,6 +6,7 @@
   },
   "targzurl": "https://github.com/browsercaptures/herokutargzbuild/blob/master/repo.tar.gz?raw=true",
   "heroku":{
-    "appname": "apidummyapp"
+    "appname": "apidummyapp",
+    "configvars": ["WELCOME_MESSAGE"]
   }
 }
