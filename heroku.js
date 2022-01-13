@@ -58,7 +58,15 @@ function getSchema(){
 }
 
 function createApp(name, token){
-    post("apps", {name}, token).then(json => console.log(json))  
+    return new Promise(resolve => {
+        post("apps", {name}, token).then(json => {
+            if(require.main === module){
+                console.log(json)
+            }
+
+            resolve(json)
+        })
+    })
 }
 
 function delApp(name, token){
@@ -125,15 +133,18 @@ function buildApp(name, url, token){
 function getAllTokens(){
     const tokensByName = {}
     const tokensByToken = {}
+    const namesByName = {}
     Object.keys(process.env).filter(key => key.match(new RegExp("^HEROKU_TOKEN_")))
     .forEach(token => {
         const envToken = process.env[token]
         tokensByName[token] = envToken
         tokensByToken[envToken] = token
+        namesByName[token] = token.split("_")[2]
     })
     return {
         tokensByName,
         tokensByToken,
+        namesByName,
     }
 }
 
@@ -142,6 +153,7 @@ if (require.main !== module){
         getApps,
         getAllTokens,
         getAllApps,
+        createApp,
         delApp,
     }    
 }else{

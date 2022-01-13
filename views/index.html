@@ -29,6 +29,20 @@
     .apps td:nth-child(6) {
         color: #707;
     }
+    .tokens {
+        font-family: monospace;
+        border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 16px;
+    }
+    .tokens td {
+        padding: 10px;
+        border: dashed 2px #077;
+    }
+    .tokens td:nth-child(1) {
+        color: #700;
+        font-weight: bold;
+    }
 </style>
 
 {{ title}} - {{ welcomeMsg }}
@@ -36,6 +50,15 @@
 <div id="app" />
 
 <template id="template">
+    <table class="tokens">
+        <tr>
+            <td>Heroku Name</td>
+        </tr>
+        <tr v-for="name in Object.keys(alltokens.tokensByName)">
+            <td>[[ alltokens.namesByName[name] ]]</td>
+            <td><button v-on:click="createapp(alltokens.tokensByName[name])">Create</button></td>
+        </tr>
+    </table>
     <table class="apps">
         <tr>
             <td>Heroku Name</td>
@@ -89,6 +112,29 @@
 
     const appConfig = {
         methods: {
+            createApp(name, token){
+                return new Promise(resolve => {
+                    post("/createapp", {name, token}).then(json => resolve(json))
+                })
+            },
+            createapp(token){
+                const name = window.prompt("App Name", "createdummyapp")
+
+                if(name){
+                    this.createApp(name, token).then(result => {
+                        console.log(result)
+
+                        this.getAllApps().then(apps => {
+                            this.apps = apps
+                        })    
+                    })
+                }
+            },
+            getAllTokens(){
+                return new Promise(resolve => {
+                    get("/getalltokens").then(json => resolve(json))
+                })
+            },
             getApps(token){
                 return new Promise(resolve => {
                     post("/apps", {token}).then(json => resolve(json))
@@ -117,6 +163,11 @@
         data() {
             return {
                 apps: [],
+                alltokens: {
+                    tokensByName: {},
+                    tokensByToken: {},
+                    namesByName: {},
+                },
                 appbckgs: [
                     "#faa",
                     "#aea",
@@ -131,6 +182,8 @@
             this.getAllApps().then(apps => {
                 this.apps = apps
             })
+
+            this.getAllTokens().then(alltokens => this.alltokens = alltokens)
         },
         compilerOptions: {
             delimiters: ["[[", "]]"]
