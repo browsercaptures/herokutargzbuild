@@ -103,7 +103,7 @@ if (require.main !== module){
     const appName = argv.name || heroku.appname
     const targzurl = argv.url || pkg.targzurl
     const config =  {}
-    pkg.heroku.configvars.forEach(cv => config[cv]=process.env[cv])
+    pkg.heroku.configvars.forEach(cv => config[cv]=process.env[cv] || null)
 
     console.log(command, argv)
 
@@ -116,6 +116,7 @@ if (require.main !== module){
     }else if(command === "schema"){
         getSchema()
     }else if(command === "setconfig"){
+        console.log(config)
         setConfig(appName, config)
     }else if(command === "getapps"){
         getApps()
