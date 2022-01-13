@@ -1,7 +1,8 @@
 const fetch = require("node-fetch")
 const fs = require("fs")
 
-const pkg = require("./package.json")
+const pkg = require("./package.json");
+const { getHeapSpaceStatistics } = require("v8");
 
 const argv = require('minimist')(process.argv.slice(2));
 
@@ -65,6 +66,10 @@ function setConfig(name, configVars){
     patch(`apps/${name}/config-vars`, configVars).then(json => console.log(json))
 }
 
+function getApps(){
+    get("apps").then(json => console.log(json))  
+}
+
 function buildApp(name, url){
     post(`apps/${name}/builds`, {
         "source_blob": {
@@ -96,6 +101,8 @@ if(command === "create"){
     getSchema()
 }else if(command === "setconfig"){
     setConfig(appName, config)
+}else if(command === "getapps"){
+    getApps()
 }else{
     console.error("unknown command")
 }
