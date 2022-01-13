@@ -150,6 +150,11 @@
           },
           getlogs(app){
             this.getLogs(app.name, app.herokuToken).then(logs => {
+              if(logs.error){
+                window.alert(logs.error)
+                return
+              }
+
               window.open(logs.logplex_url, "_blank")
             })
           },
