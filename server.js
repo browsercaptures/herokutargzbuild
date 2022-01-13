@@ -5,6 +5,9 @@ const PORT = parseInt(process.env.PORT || "3000")
 const createdAt = Date.now()
 
 const nunjucks = require("nunjucks")
+const res = require('express/lib/response')
+
+const { getApps } = require("./heroku")
 
 nunjucks.configure("views", {
   express: app
@@ -24,6 +27,10 @@ app.get("/vue", (req,res)=>{
 
 app.get("/createdat", (req,res)=>{
   res.send(JSON.stringify(createdAt))
+})
+
+app.get("/apps", (req,res)=>{
+  getApps().then(apps => res.send(JSON.stringify(apps)))
 })
 
 app.listen(PORT, () => {

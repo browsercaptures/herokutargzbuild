@@ -67,7 +67,14 @@ function setConfig(name, configVars){
 }
 
 function getApps(){
-    get("apps").then(json => console.log(json))  
+    return new Promise((resolve=>{
+        get("apps").then(json => {
+            if(require.main !== module){
+                console.log(json)
+            }
+            resolve(json)
+        })
+    }))
 }
 
 function buildApp(name, url){
@@ -78,6 +85,10 @@ function buildApp(name, url){
             "version": null
         }
     }).then(json => console.log(json))    
+}
+
+if (require.main === module){
+    process.exit()
 }
 
 const heroku = pkg.heroku
@@ -105,4 +116,8 @@ if(command === "create"){
     getApps()
 }else{
     console.error("unknown command")
+}
+
+module.exports = {
+    getApps
 }

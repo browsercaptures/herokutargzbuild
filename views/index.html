@@ -1,23 +1,66 @@
+<style>
+    .apps {
+        font-family: monospace;
+        border-collapse: collapse;
+    }
+    .apps td {
+        padding: 5px;
+        border: solid 1px;
+    }
+</style>
+
 Dummy App {{ welcomeMsg }}
 
 <div id="app" />
 
 <template id="template">
-    <div v-for="item in items" :item="item">[[ item ]]</div>
+    <table class="apps">
+        <tr>
+            <td>App Name</td>
+            <td>App Id</td>
+            <td>Created At</td>
+            <td>Updated At</td>
+            <td>Region</td>
+        </tr>
+        <tr v-for="app in apps">
+            <td>[[ app.name ]]</td>
+            <td>[[ app.id ]]</td>
+            <td>[[ app.created_at ]]</td>
+            <td>[[ app.updated_at ]]</td>
+            <td>[[ app.region.name ]]</td>
+            <!--<td><pre>[[ app ]]</pre></td>-->
+        </tr>
+    </table>
 </template>
 
 <script src="/vue"></script>
+
+<script>
+    function get(endpoint){
+        return new Promise(resolve=>{
+            fetch(endpoint).then(resp => resp.json().then(json => {
+                resolve(json)
+            }))
+        })
+    }
+</script>
 
 <script>
     document.title = "{{ title }}"
 
     const appConfig = {
         methods: {
+            getApps(){
+                get("/apps").then(json => this.apps = json)
+            }
         },
         data() {
             return {
-                items: ["a", "b", "c"]
+                apps: []
             }
+        },
+        mounted(){
+            this.getApps()
         },
         compilerOptions: {
             delimiters: ["[[", "]]"]
@@ -32,8 +75,8 @@ Dummy App {{ welcomeMsg }}
     const createdAt = {{ createdAt }}
 
     setInterval(()=>{
-        fetch("/createdat").then(resp => resp.json().then(json => {
+        get("/createdat").then(json => {
             if(json !== createdAt) document.location.reload()
-        }))
+        })
     }, 500)
 </script>
