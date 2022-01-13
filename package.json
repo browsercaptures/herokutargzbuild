@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "serve": "nodemon --exec bash startserver.sh"
+    "serve": "nodemon --exec bash startserver.sh",
+    "pretty": "prettier -w views *.js"
   },
   "dependencies": {
     "express": "^4.17.2",
@@ -24,7 +25,8 @@
     ]
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "prettier": "^2.5.1"
   },
   "nodemonConfig": {
     "watch": [
