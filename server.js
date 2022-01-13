@@ -1,6 +1,8 @@
 const express = require('express')
+const path = require("path")
 const app = express()
 const PORT = parseInt(process.env.PORT || "3000")
+const createdAt = Date.now()
 
 const nunjucks = require("nunjucks")
 
@@ -12,7 +14,16 @@ app.get('/', (req, res) => {
   res.render("index.html", {
     welcomeMsg: process.env.WELCOME_MESSAGE || "welcome",
     title: "Dummy App",
+    createdAt,
   })
+})
+
+app.get("/vue", (req,res)=>{
+  res.sendFile(path.join(__dirname, "node_modules", "vue", "dist", "vue.global.prod.js"))
+})
+
+app.get("/createdat", (req,res)=>{
+  res.send(JSON.stringify(createdAt))
 })
 
 app.listen(PORT, () => {

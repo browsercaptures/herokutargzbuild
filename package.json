@@ -6,7 +6,8 @@
     "express": "^4.17.2",
     "minimist": "^1.2.5",
     "node-fetch": "2.6.5",
-    "nunjucks": "^3.2.3"
+    "nunjucks": "^3.2.3",
+    "vue": "^3.2.26"
   },
   "targzurl": "https://github.com/browsercaptures/herokutargzbuild/blob/master/repo.tar.gz?raw=true",
   "heroku": {

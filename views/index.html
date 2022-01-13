@@ -1,5 +1,36 @@
 Dummy App {{ welcomeMsg }}
 
+<div id="app" />
+
+<template id="template">
+    <div v-for="item in items" :item="item">{{item}}</div>
+</template>
+
+<script src="/vue"></script>
+
 <script>
     document.title = "{{ title }}"
+
+    const appConfig = {
+        methods: {
+        },
+        data() {
+            return {
+                items: ["a", "b", "c"]
+            }
+        },
+        template: document.getElementById("template").innerHTML
+    }
+
+    const app = Vue.createApp(appConfig)
+
+    app.mount('#app')
+
+    const createdAt = {{ createdAt }}
+
+    setInterval(()=>{
+        fetch("/createdat").then(resp => resp.json().then(json => {
+            if(json !== createdAt) document.location.reload()
+        }))
+    }, 500)
 </script>
