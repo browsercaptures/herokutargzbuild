@@ -14,8 +14,8 @@ nunjucks.configure("views", {
 
 app.get('/', (req, res) => {
   res.render("index.html", {
-    welcomeMsg: process.env.WELCOME_MESSAGE || "welcome",
-    title: "Dummy App",
+    welcomeMsg: process.env.WELCOME_MESSAGE || "Welcome !",
+    title: "Api Dummy App",
     createdAt,
   })
 })

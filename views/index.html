@@ -2,14 +2,31 @@
     .apps {
         font-family: monospace;
         border-collapse: collapse;
+        margin-top: 10px;
+        font-size: 16px;
     }
     .apps td {
         padding: 5px;
         border: solid 1px;
     }
+    .apps td:nth-child(1) {
+        color: #070;
+    }
+    .apps td:nth-child(2) {
+        color: #007;
+    }
+    .apps td:nth-child(3) {
+        color: #770;
+    }
+    .apps td:nth-child(4) {
+        color: #770;
+    }
+    .apps td:nth-child(5) {
+        color: #707;
+    }
 </style>
 
-Dummy App {{ welcomeMsg }}
+{{ title}} - {{ welcomeMsg }}
 
 <div id="app" />
 
