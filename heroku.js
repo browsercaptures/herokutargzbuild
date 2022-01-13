@@ -87,8 +87,11 @@ function buildApp(name, url){
     }).then(json => console.log(json))    
 }
 
-if (require.main === module){
+if (require.main !== module){
+    console.log("heroku module")
     process.exit()
+}else{
+    console.log("heroku command")
 }
 
 const heroku = pkg.heroku
