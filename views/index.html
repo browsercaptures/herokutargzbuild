@@ -50,6 +50,9 @@
 <div id="app" />
 
 <template id="template">
+  <hr />
+  <button v-on:click="setadminpass">Set Admin Pass</button>
+  <hr />
   <table class="tokens">
     <tr>
       <td>Heroku Name</td>
@@ -111,6 +114,7 @@
   }
 
   function post(endpoint, payload) {
+    console.log("post", endpoint, payload);
     return new Promise((resolve) => {
       fetch(endpoint, {
         method: "POST",
@@ -132,9 +136,16 @@
 
   const appConfig = {
       methods: {
+          setadminpass(){
+            const adminPass = window.prompt("Admin Pass")
+
+            localStorage.setItem("adminpass", adminPass)
+
+            document.location.reload()
+          },
           getLogs(name, token){
               return new Promise(resolve => {
-                  post("/getlogs", {name, token}).then(json => resolve(json))
+                  post("/getlogs", {name, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
               })
           },
           getlogs(app){
@@ -144,7 +155,7 @@
           },
           createApp(name, token){
               return new Promise(resolve => {
-                  post("/createapp", {name, token}).then(json => resolve(json))
+                  post("/createapp", {name, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
               })
           },
           createapp(token){
@@ -164,7 +175,7 @@
           },
           getAllTokens(){
               return new Promise(resolve => {
-                  get("/getalltokens").then(json => resolve(json))
+                  post("/getalltokens", {adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
               })
           },
           getApps(token){
@@ -179,7 +190,7 @@
           },
           delApp(name, token){
               return new Promise(resolve => {
-                  post("/delapp", {name, token}).then(json => resolve(json))
+                  post("/delapp", {name, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
               })
           },
           delapp(app){
@@ -222,7 +233,12 @@
               this.apps = apps
           })
 
-          this.getAllTokens().then(alltokens => this.alltokens = alltokens)
+          this.getAllTokens().then(alltokens => {
+            console.log(alltokens)
+            if(!alltokens.error){
+              this.alltokens = alltokens
+            }
+          })
       },
       compilerOptions: {
           delimiters: ["[[", "]]"]

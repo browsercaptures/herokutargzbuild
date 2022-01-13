@@ -39,7 +39,20 @@ app.get("/createdat", (req, res) => {
   res.send(JSON.stringify(createdAt));
 });
 
+app.use(function (req, res, next) {
+  req.isAdmin = false;
+  if (req.body) {
+    req.isAdmin = req.body.adminPass === process.env["ADMIN_PASS"];
+  }
+  next();
+});
+
 app.post("/getlogs", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
   getLogs(req.body.name, req.body.token).then((logs) =>
     res.send(JSON.stringify(logs))
   );
@@ -54,18 +67,33 @@ app.get("/allapps", (req, res) => {
 });
 
 app.post("/createapp", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
   createApp(req.body.name, req.body.token).then((result) =>
     res.send(JSON.stringify(result))
   );
 });
 
 app.post("/delapp", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
   delApp(req.body.name, req.body.token).then((result) =>
     res.send(JSON.stringify(result))
   );
 });
 
-app.get("/getalltokens", (req, res) => {
+app.post("/getalltokens", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
   res.send(JSON.stringify(getAllTokens()));
 });
 
