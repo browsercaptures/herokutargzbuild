@@ -85,6 +85,25 @@ function getApps(token){
     }))
 }
 
+function getAllApps(){
+    return new Promise(resolve => {
+        const alltokens = getAllTokens()
+
+        Promise.all(Object.keys(alltokens.tokensByToken).map(token => getApps(token))).then(appss => {
+            const apps = appss.flat().map(app => {
+                app.herokuIndex = Object.keys(alltokens.tokensByToken).findIndex(token => app.herokuToken === token)
+                return app
+            })
+
+            if(require.main === module){
+                console.log(apps)
+            }
+
+            resolve(apps)
+        })
+    })
+}
+
 function buildApp(name, url, token){
     post(`apps/${name}/builds`, {
         "source_blob": {
@@ -114,6 +133,7 @@ if (require.main !== module){
     module.exports = {
         getApps,
         getAllTokens,
+        getAllApps,
     }    
 }else{
     console.log("heroku command")
@@ -147,6 +167,8 @@ if (require.main !== module){
         setConfig(appName, config)
     }else if(command === "getapps"){
         getApps()
+    }else if(command === "getallapps"){
+        getAllApps()
     }else if(command === "gettokens"){
         console.log(getAllTokens())
     }else{

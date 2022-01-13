@@ -6,7 +6,7 @@ const createdAt = Date.now()
 
 const nunjucks = require("nunjucks")
 
-const { getApps, getAllTokens } = require("./heroku")
+const { getApps, getAllApps, getAllTokens } = require("./heroku")
 
 nunjucks.configure("views", {
   express: app
@@ -32,6 +32,10 @@ app.get("/createdat", (req,res)=>{
 
 app.post("/apps", (req,res)=>{
   getApps(req.body.token).then(apps => res.send(JSON.stringify(apps)))
+})
+
+app.get("/allapps", (req,res)=>{
+  getAllApps().then(apps => res.send(JSON.stringify(apps)))
 })
 
 app.get("/getalltokens", (req,res)=>{
