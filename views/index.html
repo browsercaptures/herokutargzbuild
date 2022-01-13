@@ -33,6 +33,7 @@
 <template id="template">
     <table class="apps">
         <tr>
+            <td>Heroku Name</td>
             <td>App Name</td>
             <td>App Id</td>
             <td>Created At</td>
@@ -40,6 +41,7 @@
             <td>Region</td>
         </tr>
         <tr v-for="app in apps">
+            <td>[[ app.herokuName ]]</td>
             <td>[[ app.name ]]</td>
             <td>[[ app.id ]]</td>
             <td>[[ app.created_at ]]</td>
@@ -60,6 +62,20 @@
             }))
         })
     }
+
+    function post(endpoint, payload){
+        return new Promise(resolve=>{
+            fetch(endpoint, {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(resp => resp.json().then(json => {
+                resolve(json)
+            }))
+        })
+    }
 </script>
 
 <script>
@@ -67,17 +83,33 @@
 
     const appConfig = {
         methods: {
-            getApps(){
-                get("/apps").then(json => this.apps = json)
-            }
+            getApps(token){
+                return new Promise(resolve => {
+                    post("/apps", {token}).then(json => resolve(json))
+                })
+            },
+            getAllTokens(){
+                return new Promise(resolve => {
+                    get("/getalltokens").then(json => resolve(json))
+                })
+            },
         },
         data() {
             return {
-                apps: []
+                apps: [],
+                alltokens: {},
             }
         },
         mounted(){
-            this.getApps()
+            this.getAllTokens().then(alltokens => {
+                this.alltokens = alltokens
+
+                Promise.all(Object.keys(this.alltokens.tokensByToken).map(token => this.getApps(token))).then(appss => {
+                    this.apps = appss.flat().map(app => {
+                        return app
+                    })
+                })
+            })
         },
         compilerOptions: {
             delimiters: ["[[", "]]"]

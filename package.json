@@ -14,7 +14,9 @@
     "appname": "apidummyapp",
     "configvars": [
       "WELCOME_MESSAGE",
-      "HEROKU_TOKEN"
+      "HEROKU_TOKEN",
+      "HEROKU_TOKEN_BROWSERCAPTURES",
+      "HEROKU_TOKEN_EASYCHESSANIMATIONS"
     ]
   },
   "devDependencies": {

@@ -8,12 +8,15 @@ const argv = require('minimist')(process.argv.slice(2));
 
 const API_BASE_URL = "https://api.heroku.com"
 
-function api(endpoint, method, payload){
+let defaultTokenName = "HEROKU_TOKEN"
+let defaultToken = process.env[defaultTokenName]
+
+function api(endpoint, method, payload, token){
     return new Promise((resolve, reject) => {
         fetch(`${API_BASE_URL}/${endpoint}`, {
             method,
             headers:{
-                Authorization: `Bearer ${process.env.HEROKU_TOKEN}`,
+                Authorization: `Bearer ${token || defaultToken}`,
                 Accept: "application/vnd.heroku+json; version=3",
                 "Content-Type": "application/json",
             },
@@ -34,64 +37,83 @@ function api(endpoint, method, payload){
     })    
 }
 
-function get(endpoint, payload){
-    return api(endpoint, "GET", payload)
+function get(endpoint, payload, token){
+    return api(endpoint, "GET", payload, token)
 }
 
-function post(endpoint, payload){
-    return api(endpoint, "POST", payload)
+function post(endpoint, payload, token){
+    return api(endpoint, "POST", payload, token)
 }
 
-function del(endpoint, payload){
-    return api(endpoint, "DELETE", payload)
+function del(endpoint, payload, token){
+    return api(endpoint, "DELETE", payload, token)
 }
 
-function patch(endpoint, payload){
-    return api(endpoint, "PATCH", payload)
+function patch(endpoint, payload, token){
+    return api(endpoint, "PATCH", payload, token)
 }
 
 function getSchema(){
     get("schema").then(json => fs.writeFileSync("schema.json", JSON.stringify(json, null, 2)))  
 }
 
-function createApp(name){
-    post("apps", {name}).then(json => console.log(json))  
+function createApp(name, token){
+    post("apps", {name}, token).then(json => console.log(json))  
 }
 
-function delApp(name){
-    del(`apps/${name}`).then(json => console.log(json))
+function delApp(name, token){
+    del(`apps/${name}`, undefined, token).then(json => console.log(json))
 }
 
-function setConfig(name, configVars){
-    patch(`apps/${name}/config-vars`, configVars).then(json => console.log(json))
+function setConfig(name, configVars, token){
+    patch(`apps/${name}/config-vars`, configVars, token).then(json => console.log(json))
 }
 
-function getApps(){
+function getApps(token){
     return new Promise((resolve=>{
-        get("apps").then(json => {
+        get("apps", undefined, token).then(json => {
             if(require.main === module){
                 console.log(json)
             }
+            const alltokens = getAllTokens()
+            json.forEach(app => {
+                app.herokuToken = token
+                app.herokuName = alltokens.tokensByToken[token].split("_")[2]
+            })
             resolve(json)
         })
     }))
 }
 
-function buildApp(name, url){
+function buildApp(name, url, token){
     post(`apps/${name}/builds`, {
         "source_blob": {
             "checksum": null,
             url,
             "version": null
         }
-    }).then(json => console.log(json))    
+    }, token).then(json => console.log(json))    
+}
+
+function getAllTokens(){
+    const tokensByName = {}
+    const tokensByToken = {}
+    Object.keys(process.env).filter(key => key.match(new RegExp("^HEROKU_TOKEN_")))
+    .forEach(token => {
+        const envToken = process.env[token]
+        tokensByName[token] = envToken
+        tokensByToken[envToken] = token
+    })
+    return {
+        tokensByName,
+        tokensByToken,
+    }
 }
 
 if (require.main !== module){
-    console.log("heroku module")
-
     module.exports = {
-        getApps
+        getApps,
+        getAllTokens,
     }    
 }else{
     console.log("heroku command")
@@ -105,7 +127,12 @@ if (require.main !== module){
     const config =  {}
     pkg.heroku.configvars.forEach(cv => config[cv]=process.env[cv] || null)
 
-    console.log(command, argv)
+    if(argv.token){
+        defaultTokenName = defaultTokenName + "_" + argv.token.toUpperCase()
+        defaultToken = process.env[defaultTokenName]
+    }
+
+    console.log(command, argv, defaultTokenName)
 
     if(command === "create"){
         createApp(appName)
@@ -120,6 +147,8 @@ if (require.main !== module){
         setConfig(appName, config)
     }else if(command === "getapps"){
         getApps()
+    }else if(command === "gettokens"){
+        console.log(getAllTokens())
     }else{
         console.error("unknown command")
     }

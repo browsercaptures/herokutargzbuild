@@ -6,11 +6,13 @@ const createdAt = Date.now()
 
 const nunjucks = require("nunjucks")
 
-const { getApps } = require("./heroku")
+const { getApps, getAllTokens } = require("./heroku")
 
 nunjucks.configure("views", {
   express: app
 })
+
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.render("index.html", {
@@ -28,8 +30,12 @@ app.get("/createdat", (req,res)=>{
   res.send(JSON.stringify(createdAt))
 })
 
-app.get("/apps", (req,res)=>{
-  getApps().then(apps => res.send(JSON.stringify(apps)))
+app.post("/apps", (req,res)=>{
+  getApps(req.body.token).then(apps => res.send(JSON.stringify(apps)))
+})
+
+app.get("/getalltokens", (req,res)=>{
+  res.send(JSON.stringify(getAllTokens()))
 })
 
 app.listen(PORT, () => {
