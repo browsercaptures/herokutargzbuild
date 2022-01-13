@@ -12,6 +12,7 @@ const {
   createApp,
   delApp,
   getAllTokens,
+  getLogs,
 } = require("./heroku");
 
 nunjucks.configure("views", {
@@ -36,6 +37,12 @@ app.get("/vue", (req, res) => {
 
 app.get("/createdat", (req, res) => {
   res.send(JSON.stringify(createdAt));
+});
+
+app.post("/getlogs", (req, res) => {
+  getLogs(req.body.name, req.body.token).then((logs) =>
+    res.send(JSON.stringify(logs))
+  );
 });
 
 app.post("/apps", (req, res) => {

@@ -90,6 +90,22 @@ function setConfig(name, configVars, token) {
   );
 }
 
+function getLogs(name, token, lines, tail) {
+  return new Promise((resolve) => {
+    post(
+      `apps/${name}/log-sessions`,
+      { lines: lines || 100, tail: tail || false },
+      token
+    ).then((json) => {
+      if (require.main === module) {
+        console.log(json);
+      }
+
+      resolve(json);
+    });
+  });
+}
+
 function getApps(token) {
   return new Promise((resolve) => {
     get("apps", undefined, token).then((json) => {
@@ -169,6 +185,7 @@ if (require.main !== module) {
     getAllApps,
     createApp,
     delApp,
+    getLogs,
   };
 } else {
   console.log("heroku command");
@@ -206,6 +223,8 @@ if (require.main !== module) {
     getAllApps();
   } else if (command === "gettokens") {
     console.log(getAllTokens());
+  } else if (command === "getlogs") {
+    getLogs(appName);
   } else {
     console.error("unknown command");
   }

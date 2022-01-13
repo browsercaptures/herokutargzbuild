@@ -82,7 +82,16 @@
       <td>[[ app.created_at ]]</td>
       <td>[[ app.updated_at ]]</td>
       <td>[[ app.region.name ]]</td>
-      <td><button v-on:click="delapp(app)">Delete</button></td>
+      <td>
+        <button v-on:click="getlogs(app)" style="background-color: #afa">
+          Logs
+        </button>
+      </td>
+      <td>
+        <button v-on:click="delapp(app)" style="background-color: #faa">
+          Delete
+        </button>
+      </td>
       <!--<td><pre>[[ app ]]</pre></td>-->
     </tr>
   </table>
@@ -123,6 +132,16 @@
 
   const appConfig = {
       methods: {
+          getLogs(name, token){
+              return new Promise(resolve => {
+                  post("/getlogs", {name, token}).then(json => resolve(json))
+              })
+          },
+          getlogs(app){
+            this.getLogs(app.name, app.herokuToken).then(logs => {
+              window.open(logs.logplex_url, "_blank")
+            })
+          },
           createApp(name, token){
               return new Promise(resolve => {
                   post("/createapp", {name, token}).then(json => resolve(json))
@@ -134,6 +153,8 @@
               if(name){
                   this.createApp(name, token).then(result => {
                       console.log(result)
+
+                      window.alert(JSON.stringify(result))
 
                       this.getAllApps().then(apps => {
                           this.apps = apps
@@ -162,8 +183,15 @@
               })
           },
           delapp(app){
+              const confirm = window.prompt("Type app name to delete")
+              if(confirm !== app.name){
+                window.alert("Delete canceled!")
+                return
+              }
               this.delApp(app.name, app.herokuToken).then(result => {
                   console.log(result)
+
+                  window.alert(JSON.stringify(result))
 
                   this.getAllApps().then(apps => {
                       this.apps = apps
