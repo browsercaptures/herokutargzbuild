@@ -1,3 +1,5 @@
+. env.sh
+
 . p.sh $*
 
 . h.sh setconfig
