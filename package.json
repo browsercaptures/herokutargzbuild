@@ -1,12 +1,28 @@
 {
+  "scripts": {
+    "serve": "nodemon --exec bash startserver.sh"
+  },
   "dependencies": {
     "express": "^4.17.2",
     "minimist": "^1.2.5",
-    "node-fetch": "2.6.5"
+    "node-fetch": "2.6.5",
+    "nunjucks": "^3.2.3"
   },
   "targzurl": "https://github.com/browsercaptures/herokutargzbuild/blob/master/repo.tar.gz?raw=true",
-  "heroku":{
+  "heroku": {
     "appname": "apidummyapp",
-    "configvars": ["WELCOME_MESSAGE"]
+    "configvars": [
+      "WELCOME_MESSAGE",
+      "HEROKU_TOKEN"
+    ]
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "server.js",
+      "views/index.html"
+    ]
   }
 }
