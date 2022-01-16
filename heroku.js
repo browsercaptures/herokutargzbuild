@@ -26,13 +26,15 @@ function fetchText(url) {
           .text()
           .then((text) => resolve(text))
           .catch((err) => {
-            console.error(err);
-            reject(`could not get response text ${err}`);
+            const errMsg = `could not get response text ${err}`;
+            console.log(errMsg);
+            reject(errMsg);
           });
       })
       .catch((err) => {
-        console.error(err);
-        reject(`could not get response ${err}`);
+        const errMsg = `could not get response ${err}`;
+        console.log(errMsg);
+        reject(errMsg);
       })
   );
 }
