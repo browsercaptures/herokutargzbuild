@@ -17,16 +17,16 @@ var config = {};
 pkg.heroku.configvars.forEach((cv) => (config[cv] = process.env[cv] || null));
 
 function fetchText(url) {
-  console.log("fetch text", url);
+  //console.log("fetch text", url);
   return new Promise((resolve, reject) => {
     try {
       fetch(url)
         .then((response) => {
-          console.log("response", response);
+          //console.log("response", response);
           response
             .text()
             .then((text) => {
-              console.log("got text size", text.length);
+              //console.log("got text size", text.length);
               resolve(text);
             })
             .catch((err) => {
@@ -144,7 +144,7 @@ function getLogs(name, token, lines, tail) {
     ).then((json) => {
       fetchText(json.logplex_url)
         .then((text) => {
-          console.log("fetched logs text size", text.length);
+          //console.log("fetched logs text size", text.length);
           json.logText = `${text}`;
           json.logLines = json.logText
             .replace(/\r/g, "")
