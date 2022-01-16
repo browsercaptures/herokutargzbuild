@@ -153,12 +153,19 @@ function getAllApps() {
     Promise.all(
       Object.keys(alltokens.tokensByToken).map((token) => getApps(token))
     ).then((appss) => {
-      const apps = appss.flat().map((app) => {
-        app.herokuIndex = Object.keys(alltokens.tokensByToken).findIndex(
-          (token) => app.herokuToken === token
-        );
-        return app;
-      });
+      const apps = appss
+        .flat()
+        .map((app) => {
+          app.herokuIndex = Object.keys(alltokens.tokensByToken).findIndex(
+            (token) => app.herokuToken === token
+          );
+          return app;
+        })
+        .sort((a, b) => {
+          if (a.herokuName != b.herokuName)
+            return a.herokuName.localeCompare(b.herokuName);
+          return a.name.localeCompare(b.name);
+        });
 
       if (require.main === module) {
         console.log(apps);
