@@ -1,4 +1,11 @@
 <style>
+  .logtable {
+    border-collapse: collapse !important;
+  }
+  .logtable td {
+    padding: 2px 10px 2px 10px !important;
+    border: solid 1px #777 !important;
+  }
   .apps {
     font-family: monospace;
     border-collapse: collapse;
@@ -97,40 +104,50 @@
       <td>Updated At</td>
       <td>Region</td>
     </tr>
-    <tr
-      v-for="app in apps"
-      :style="`background-color: ${appbckgs[app.herokuIndex]};`"
-    >
-      <td>[[ app.herokuName ]]</td>
-      <td>
-        <a
-          rel="noopener noreferrer"
-          target="_blank"
-          :href="`https://${app.name}.herokuapp.com`"
-          >[[ app.name ]]</a
-        >
-      </td>
-      <td>[[ app.id ]]</td>
-      <td>[[ app.created_at ]]</td>
-      <td>[[ app.updated_at ]]</td>
-      <td>[[ app.region.name ]]</td>
-      <td>
-        <button v-on:click="getlogs(app)" style="background-color: #afa">
-          Logs
-        </button>
-      </td>
-      <td>
-        <button v-on:click="getbuilds(app)" style="background-color: #aaf">
-          Builds
-        </button>
-      </td>
-      <td>
-        <button v-on:click="delapp(app)" style="background-color: #faa">
-          Delete
-        </button>
-      </td>
-      <!--<td><pre>[[ app ]]</pre></td>-->
-    </tr>
+    <template v-for="app in apps">
+      <tr :style="`background-color: ${appbckgs[app.herokuIndex]};`">
+        <td>[[ app.herokuName ]]</td>
+        <td>
+          <a
+            rel="noopener noreferrer"
+            target="_blank"
+            :href="`https://${app.name}.herokuapp.com`"
+            >[[ app.name ]]</a
+          >
+        </td>
+        <td>[[ app.id ]]</td>
+        <td>[[ app.created_at ]]</td>
+        <td>[[ app.updated_at ]]</td>
+        <td>[[ app.region.name ]]</td>
+        <td>
+          <button v-on:click="getlogs(app)" style="background-color: #afa">
+            Logs
+          </button>
+        </td>
+        <td>
+          <button v-on:click="getbuilds(app)" style="background-color: #aaf">
+            Builds
+          </button>
+        </td>
+        <td>
+          <button v-on:click="delapp(app)" style="background-color: #faa">
+            Delete
+          </button>
+        </td>
+        <!--<td><pre>[[ app ]]</pre></td>-->
+      </tr>
+      <tr v-if="app.logs">
+        <td colspan="9">
+          <table class="logtable">
+            <tr v-for="item in app.logs.logItems">
+              <td>[[ item.time.replace("T", " ") ]]</td>
+              <td>[[ item.dyno ]]</td>
+              <td>[[ item.content ]]</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </template>
   </table>
 </template>
 
@@ -160,6 +177,7 @@
         },
       }).then((resp) =>
         resp.json().then((json) => {
+          console.log(json)
           resolve(json);
         })
       );
@@ -214,7 +232,8 @@
                 return
               }
 
-              window.open(logs.logplex_url, "_blank")
+              //window.open(logs.logplex_url, "_blank")
+              app.logs = logs
             })
           },
           getBuilds(name, token){

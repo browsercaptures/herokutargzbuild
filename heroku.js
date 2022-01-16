@@ -3,6 +3,7 @@ const fs = require("fs");
 
 const pkg = require("./package.json");
 const { getHeapSpaceStatistics } = require("v8");
+const { resolve } = require("path");
 
 const argv = require("minimist")(process.argv.slice(2));
 
@@ -14,6 +15,23 @@ let defaultToken = process.env[defaultTokenName];
 var config = {};
 
 pkg.heroku.configvars.forEach((cv) => (config[cv] = process.env[cv] || null));
+
+function fetchText(url) {
+  return new Promise((resolve, reject) =>
+    fetch(url).then((response) =>
+      response
+        .text()
+        .then((text) => resolve(text))
+        .catch((err) => {
+          console.error(err);
+          reject(`could not get response text ${err}`);
+        })
+    )
+  ).catch((err) => {
+    console.error(err);
+    reject(`could not get response ${err}`);
+  });
+}
 
 function api(endpoint, method, payload, token) {
   return new Promise((resolve, reject) => {
@@ -109,11 +127,36 @@ function getLogs(name, token, lines, tail) {
       { lines: lines || 100, tail: tail || false },
       token
     ).then((json) => {
-      if (require.main === module) {
-        console.log(json);
-      }
+      fetchText(json.logplex_url)
+        .then((text) => {
+          json.logText = text;
+          json.logLines = text
+            .replaceAll("\r", "")
+            .split("\n")
+            .filter((line) => line.length);
+          json.logItems = json.logLines.map((line) => {
+            const m = line.match(/([^ ]+) ([^ ]+): (.*)/);
+            return { time: m[1], dyno: m[2], content: m[3] };
+          });
 
-      resolve(json);
+          if (require.main === module) {
+            console.log(json);
+          }
+
+          resolve(json);
+        })
+        .catch((err) => {
+          json.error = err;
+          json.logText = err;
+          json.logLines = [];
+          json.logItems = [];
+
+          if (require.main === module) {
+            console.log(json);
+          }
+
+          resolve(json);
+        });
     });
   });
 }
