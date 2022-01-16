@@ -144,9 +144,9 @@ function getLogs(name, token, lines, tail) {
     ).then((json) => {
       fetchText(json.logplex_url)
         .then((text) => {
-          console.log("fetched logs text size", text.length, text);
-          json.logText = text;
-          json.logLines = `${text}`
+          console.log("fetched logs text size", text.length, "content", text);
+          json.logText = `${text}`;
+          json.logLines = json.logText
             .replaceAll("\r", "")
             .split("\n")
             .filter((line) => line.length);
