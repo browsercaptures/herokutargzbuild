@@ -102,7 +102,6 @@ app.post("/buildapp", (req, res) => {
   const name = req.body.name;
   const url = req.body.url;
   const token = process.env[req.body.token];
-  console.log("build app", name, url, token);
 
   buildApp(name, url, token).then((result) => res.send(JSON.stringify(result)));
 });
