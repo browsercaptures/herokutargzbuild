@@ -75,10 +75,14 @@
         <span style="color: #007">[[conf.url]]</span>
       </td>
       <td>
-        <select v-on:change="buildapp($event, conf)" style="color: #070">
+        <select
+          v-on:change="buildapp($event, conf)"
+          style="color: #070; font-weight: bold"
+        >
           <option
             v-for="name in ['Build At'].concat(Object.keys(alltokens.tokensByName))"
             :value="name"
+            style="font-weight: bold"
           >
             [[ alltokens.namesByName[name] || name ]]
           </option>
