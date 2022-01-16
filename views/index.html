@@ -1,4 +1,10 @@
 <style>
+  body {
+    opacity: 0;
+    background-color: #eee;
+    transform: scale(0.5);
+    transition: all 1s;
+  }
   .logtable {
     border-collapse: collapse !important;
   }
@@ -63,38 +69,6 @@
   <hr />
   <button v-on:click="setadminpass">Set Admin Pass</button>
   <hr />
-  <table class="tokens">
-    <tr>
-      <td>Heroku Name</td>
-    </tr>
-    <tr v-for="name in alltokens.herokuNames">
-      <td>[[ name ]]</td>
-      <td>
-        <button v-on:click="createapp(name)">Create</button>
-      </td>
-    </tr>
-    <tr v-for="conf in buildConf">
-      <td>
-        <span style="color: #070">[[conf.app]]</span>
-        @
-        <span style="color: #007">[[conf.url]]</span>
-      </td>
-      <td>
-        <select
-          v-on:change="buildapp($event, conf)"
-          style="color: #070; font-weight: bold"
-        >
-          <option
-            v-for="name in ['Build At'].concat(Object.keys(alltokens.tokensByName))"
-            :value="name"
-            style="font-weight: bold"
-          >
-            [[ alltokens.namesByName[name] || name ]]
-          </option>
-        </select>
-      </td>
-    </tr>
-  </table>
   <table class="apps">
     <tr>
       <td>Heroku Name</td>
@@ -172,6 +146,38 @@
         </td>
       </tr>
     </template>
+  </table>
+  <table class="tokens">
+    <tr>
+      <td>Heroku Name</td>
+    </tr>
+    <tr v-for="name in alltokens.herokuNames">
+      <td>[[ name ]]</td>
+      <td>
+        <button v-on:click="createapp(name)">Create</button>
+      </td>
+    </tr>
+    <tr v-for="conf in buildConf">
+      <td>
+        <span style="color: #070">[[conf.app]]</span>
+        @
+        <span style="color: #007">[[conf.url]]</span>
+      </td>
+      <td>
+        <select
+          v-on:change="buildapp($event, conf)"
+          style="color: #070; font-weight: bold"
+        >
+          <option
+            v-for="name in ['Build At'].concat(Object.keys(alltokens.tokensByName))"
+            :value="name"
+            style="font-weight: bold"
+          >
+            [[ alltokens.namesByName[name] || name ]]
+          </option>
+        </select>
+      </td>
+    </tr>
   </table>
 </template>
 
@@ -360,6 +366,10 @@
       mounted(){
           this.getAllApps().then(apps => {
               this.apps = apps
+
+              document.body.style.opacity = 1
+              document.body.style.transform = "scale(1)"
+              document.body.style.backgroundColor = "#fff"
           })
 
           this.getAllTokens().then(alltokens => {
