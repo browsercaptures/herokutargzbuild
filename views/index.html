@@ -136,6 +136,17 @@
         </td>
         <!--<td><pre>[[ app ]]</pre></td>-->
       </tr>
+      <tr v-if="app.builds">
+        <td colspan="9">
+          <table class="logtable">
+            <tr v-for="item in app.builds.slice().reverse()">
+              <td>[[ item.created_at ]]</td>
+              <td>[[ item.status ]]</td>
+              <td>[[ item.updated_at ]]</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
       <tr v-if="app.logs">
         <td colspan="9">
           <table class="logtable">
@@ -248,8 +259,9 @@
                 return
               }
 
-              const w = window.open()
-              w.document.write("<pre>" + JSON.stringify(builds, null, 2) + "</pre>")
+              //const w = window.open()
+              //w.document.write("<pre>" + JSON.stringify(builds, null, 2) + "</pre>")
+              app.builds = builds
             })
           },
           createApp(name, token){
