@@ -18,28 +18,34 @@ pkg.heroku.configvars.forEach((cv) => (config[cv] = process.env[cv] || null));
 
 function fetchText(url) {
   console.log("fetch text", url);
-  return new Promise((resolve, reject) =>
-    fetch(url)
-      .then((response) => {
-        console.log("response", response);
-        response
-          .text()
-          .then((text) => {
-            console.log("got text size", text.length);
-            resolve(text);
-          })
-          .catch((err) => {
-            const errMsg = `could not get response text ${err}`;
-            console.log("error", errMsg);
-            reject(errMsg);
-          });
-      })
-      .catch((err) => {
-        const errMsg = `could not get response ${err}`;
-        console.log("error", errMsg);
-        reject(errMsg);
-      })
-  );
+  return new Promise((resolve, reject) => {
+    try {
+      fetch(url)
+        .then((response) => {
+          console.log("response", response);
+          response
+            .text()
+            .then((text) => {
+              console.log("got text size", text.length);
+              resolve(text);
+            })
+            .catch((err) => {
+              const errMsg = `could not get response text ${err}`;
+              console.log("error", errMsg);
+              reject(errMsg);
+            });
+        })
+        .catch((err) => {
+          const errMsg = `could not get response ${err}`;
+          console.log("error", errMsg);
+          reject(errMsg);
+        });
+    } catch (err) {
+      const errMsg = `fetch error ${err}`;
+      console.log(errMsg);
+      reject(errMsg);
+    }
+  });
 }
 
 function api(endpoint, method, payload, token) {
