@@ -17,17 +17,19 @@ var config = {};
 pkg.heroku.configvars.forEach((cv) => (config[cv] = process.env[cv] || null));
 
 function fetchText(url) {
+  console.log("fetch text", url);
   return new Promise((resolve, reject) =>
     fetch(url)
-      .then((response) =>
+      .then((response) => {
+        console.log("response", response);
         response
           .text()
           .then((text) => resolve(text))
           .catch((err) => {
             console.error(err);
             reject(`could not get response text ${err}`);
-          })
-      )
+          });
+      })
       .catch((err) => {
         console.error(err);
         reject(`could not get response ${err}`);
