@@ -155,16 +155,16 @@ function getAllApps() {
     ).then((appss) => {
       const apps = appss
         .flat()
-        .map((app) => {
-          app.herokuIndex = Object.keys(alltokens.tokensByToken).findIndex(
-            (token) => app.herokuToken === token
-          );
-          return app;
-        })
         .sort((a, b) => {
           if (a.herokuName != b.herokuName)
             return a.herokuName.localeCompare(b.herokuName);
           return a.name.localeCompare(b.name);
+        })
+        .map((app) => {
+          app.herokuIndex = alltokens.herokuNames.findIndex(
+            (name) => app.herokuName === name
+          );
+          return app;
         });
 
       if (require.main === module) {
@@ -202,18 +202,22 @@ function getAllTokens() {
   const tokensByName = {};
   const tokensByToken = {};
   const namesByName = {};
+  const herokuNames = [];
   Object.keys(process.env)
     .filter((key) => key.match(new RegExp("^HEROKU_TOKEN_")))
     .forEach((token) => {
       const envToken = process.env[token];
+      const herokuName = token.split("_")[2];
       tokensByName[token] = envToken;
       tokensByToken[envToken] = token;
-      namesByName[token] = token.split("_")[2];
+      namesByName[token] = herokuName;
+      herokuNames.push(herokuName);
     });
   return {
     tokensByName,
     tokensByToken,
     namesByName,
+    herokuNames: herokuNames.sort((a, b) => a.localeCompare(b)),
   };
 }
 

@@ -60,12 +60,10 @@
     <tr>
       <td>Heroku Name</td>
     </tr>
-    <tr v-for="name in Object.keys(alltokens.tokensByName)">
-      <td>[[ alltokens.namesByName[name] ]]</td>
+    <tr v-for="name in alltokens.herokuNames">
+      <td>[[ name ]]</td>
       <td>
-        <button v-on:click="createapp(alltokens.tokensByName[name])">
-          Create
-        </button>
+        <button v-on:click="createapp(name)">Create</button>
       </td>
     </tr>
     <tr v-for="conf in buildConf">
