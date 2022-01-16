@@ -35,6 +35,10 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/favicon.ico", (req, res) => {
+  res.sendFile(path.join(__dirname, "favicon.ico"));
+});
+
 app.get("/vue", (req, res) => {
   res.sendFile(
     path.join(__dirname, "node_modules", "vue", "dist", "vue.global.prod.js")
