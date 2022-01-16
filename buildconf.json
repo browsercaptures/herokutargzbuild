@@ -8,6 +8,10 @@
         "url": "https://github.com/browsercaptures/herokutargzbuild/blob/master/repo.tar.gz?raw=true"
     },
     {
+        "app": "apidummyapp2",
+        "url": "https://github.com/browsercaptures/herokutargzbuild/blob/master/repo.tar.gz?raw=true"
+    },
+    {
         "app": "easychess2",
         "url": "https://github.com/browsercaptures/easychess/blob/master/repo.tar.gz?raw=true"
     },
