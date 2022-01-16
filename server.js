@@ -17,6 +17,7 @@ const {
   getLogs,
   getBuilds,
   buildApp,
+  setConfig,
 } = require("./heroku");
 
 nunjucks.configure("views", {
@@ -103,7 +104,11 @@ app.post("/buildapp", (req, res) => {
   const url = req.body.url;
   const token = process.env[req.body.token];
 
-  buildApp(name, url, token).then((result) => res.send(JSON.stringify(result)));
+  setConfig(name, undefined, token).then((resultConfig) => {
+    buildApp(name, url, token).then((resultBuild) =>
+      res.send(JSON.stringify({ resultBuild, resultConfig }))
+    );
+  });
 });
 
 app.post("/delapp", (req, res) => {

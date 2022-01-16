@@ -11,6 +11,10 @@ const API_BASE_URL = "https://api.heroku.com";
 let defaultTokenName = "HEROKU_TOKEN";
 let defaultToken = process.env[defaultTokenName];
 
+var config = {};
+
+pkg.heroku.configvars.forEach((cv) => (config[cv] = process.env[cv] || null));
+
 function api(endpoint, method, payload, token) {
   return new Promise((resolve, reject) => {
     fetch(`${API_BASE_URL}/${endpoint}`, {
@@ -85,9 +89,17 @@ function delApp(name, token) {
 }
 
 function setConfig(name, configVars, token) {
-  patch(`apps/${name}/config-vars`, configVars, token).then((json) =>
-    console.log(json)
-  );
+  return new Promise((resolve) => {
+    patch(`apps/${name}/config-vars`, configVars || config, token).then(
+      (json) => {
+        if (require.main === module) {
+          console.log(json);
+        }
+
+        resolve(json);
+      }
+    );
+  });
 }
 
 function getLogs(name, token, lines, tail) {
@@ -208,6 +220,7 @@ if (require.main !== module) {
     getLogs,
     getBuilds,
     buildApp,
+    setConfig,
   };
 } else {
   console.log("heroku command");
@@ -218,8 +231,6 @@ if (require.main !== module) {
 
   const appName = argv.name || heroku.appname;
   const targzurl = argv.url || pkg.targzurl;
-  const config = {};
-  pkg.heroku.configvars.forEach((cv) => (config[cv] = process.env[cv] || null));
 
   if (argv.token) {
     defaultTokenName = defaultTokenName + "_" + argv.token.toUpperCase();
@@ -237,8 +248,7 @@ if (require.main !== module) {
   } else if (command === "schema") {
     getSchema();
   } else if (command === "setconfig") {
-    console.log(config);
-    setConfig(appName, config);
+    setConfig(appName);
   } else if (command === "getapps") {
     getApps();
   } else if (command === "getallapps") {

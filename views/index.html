@@ -186,6 +186,7 @@
             const url = conf.url
             this.buildApp(name, url, token).then(result => {
               window.alert(JSON.stringify(result))
+              console.log(result)
             })
           },
           setadminpass(){
