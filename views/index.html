@@ -138,24 +138,28 @@
       </tr>
       <tr v-if="app.builds">
         <td colspan="9">
-          <table class="logtable">
-            <tr v-for="item in app.builds.slice().reverse()">
-              <td>[[ item.created_at ]]</td>
-              <td>[[ item.status ]]</td>
-              <td>[[ item.updated_at ]]</td>
-            </tr>
-          </table>
+          <div style="max-height: 200px; overflow-y: scroll; max-width: 100%">
+            <table class="logtable">
+              <tr v-for="item in app.builds.slice().reverse()">
+                <td>[[ item.created_at ]]</td>
+                <td>[[ item.status ]]</td>
+                <td>[[ item.updated_at ]]</td>
+              </tr>
+            </table>
+          </div>
         </td>
       </tr>
       <tr v-if="app.logs">
         <td colspan="9">
-          <table class="logtable">
-            <tr v-for="item in app.logs.logItems">
-              <td>[[ item.time.replace("T", " ") ]]</td>
-              <td>[[ item.dyno ]]</td>
-              <td>[[ item.content ]]</td>
-            </tr>
-          </table>
+          <div style="max-height: 400px; overflow-y: scroll; max-width: 100%">
+            <table class="logtable">
+              <tr v-for="item in app.logs.logItems.slice().reverse()">
+                <td>[[ item.time.replace("T", " ") ]]</td>
+                <td>[[ item.dyno ]]</td>
+                <td>[[ item.content ]]</td>
+              </tr>
+            </table>
+          </div>
         </td>
       </tr>
     </template>
