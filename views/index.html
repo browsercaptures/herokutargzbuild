@@ -190,6 +190,10 @@
               this.buildApp(name, url, token).then(resultBuild => {
                 window.alert(JSON.stringify(resultBuild))
                 console.log(resultBuild)
+
+                this.getAllApps().then(apps => {
+                    this.apps = apps
+                })
               })
             })
           },
