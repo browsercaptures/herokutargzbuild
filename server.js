@@ -6,6 +6,8 @@ const createdAt = Date.now();
 
 const nunjucks = require("nunjucks");
 
+const buildConf = JSON.stringify(require("./buildconf.json"), null, 2);
+
 const {
   getApps,
   getAllApps,
@@ -14,6 +16,7 @@ const {
   getAllTokens,
   getLogs,
   getBuilds,
+  buildApp,
 } = require("./heroku");
 
 nunjucks.configure("views", {
@@ -26,6 +29,7 @@ app.get("/", (req, res) => {
   res.render("index.html", {
     welcomeMsg: process.env.WELCOME_MESSAGE || "Welcome !",
     title: "Api Dummy App",
+    buildConf,
     createdAt,
   });
 });
@@ -87,6 +91,20 @@ app.post("/createapp", (req, res) => {
   createApp(req.body.name, req.body.token).then((result) =>
     res.send(JSON.stringify(result))
   );
+});
+
+app.post("/buildapp", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
+  const name = req.body.name;
+  const url = req.body.url;
+  const token = process.env[req.body.token];
+  console.log("build app", name, url, token);
+
+  buildApp(name, url, token).then((result) => res.send(JSON.stringify(result)));
 });
 
 app.post("/delapp", (req, res) => {

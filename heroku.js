@@ -158,17 +158,25 @@ function getAllApps() {
 }
 
 function buildApp(name, url, token) {
-  post(
-    `apps/${name}/builds`,
-    {
-      source_blob: {
-        checksum: null,
-        url,
-        version: null,
+  return new Promise((resolve) => {
+    post(
+      `apps/${name}/builds`,
+      {
+        source_blob: {
+          checksum: null,
+          url,
+          version: null,
+        },
       },
-    },
-    token
-  ).then((json) => console.log(json));
+      token
+    ).then((json) => {
+      if (require.main === module) {
+        console.log(json);
+      }
+
+      resolve(json);
+    });
+  });
 }
 
 function getAllTokens() {
@@ -199,6 +207,7 @@ if (require.main !== module) {
     delApp,
     getLogs,
     getBuilds,
+    buildApp,
   };
 } else {
   console.log("heroku command");

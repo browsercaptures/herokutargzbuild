@@ -1,0 +1,10 @@
+[
+    {
+        "app": "appvueexpress",
+        "url": "https://github.com/browsercaptures/vueexpress/blob/main/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "apidummyapp",
+        "url": "https://github.com/browsercaptures/herokutargzbuild/blob/master/repo.tar.gz?raw=true"
+    }
+]

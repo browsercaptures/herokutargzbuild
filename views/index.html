@@ -68,6 +68,22 @@
         </button>
       </td>
     </tr>
+    <tr v-for="conf in buildConf">
+      <td>
+        <span style="color: #070">[[conf.app]]</span>
+        <span style="color: #007">[[conf.url]]</span>
+      </td>
+      <td>
+        <select v-on:change="buildapp($event, conf)" style="color: #070">
+          <option
+            v-for="name in ['Build At'].concat(Object.keys(alltokens.tokensByName))"
+            :value="name"
+          >
+            [[ alltokens.namesByName[name] || name ]]
+          </option>
+        </select>
+      </td>
+    </tr>
   </table>
   <table class="apps">
     <tr>
@@ -111,6 +127,8 @@
 <script src="/vue"></script>
 
 <script>
+  const buildConf = {{ buildConf|safe }}
+
   function get(endpoint) {
     return new Promise((resolve) => {
       fetch(endpoint).then((resp) =>
@@ -144,6 +162,20 @@
 
   const appConfig = {
       methods: {
+          buildApp(name, url, token){
+              return new Promise(resolve => {
+                  post("/buildapp", {name, url, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
+              })
+          },
+          buildapp(ev, conf){
+            const token = ev.target.value
+            ev.target.value = "Build At"
+            const name = conf.app
+            const url = conf.url
+            this.buildApp(name, url, token).then(result => {
+              window.alert(JSON.stringify(result))
+            })
+          },
           setadminpass(){
             const adminPass = window.prompt("Admin Pass")
 
@@ -255,6 +287,7 @@
                   "#f9f",
                   "#aee"
               ],
+              buildConf,
           }
       },
       mounted(){
