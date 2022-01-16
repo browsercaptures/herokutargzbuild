@@ -103,6 +103,11 @@
       <td>Created At</td>
       <td>Updated At</td>
       <td>Region</td>
+      <td>
+        <button v-on:click="getalllogs" style="background-color: #afa">
+          All Logs
+        </button>
+      </td>
     </tr>
     <template v-for="app in apps">
       <tr :style="`background-color: ${appbckgs[app.herokuIndex]};`">
@@ -119,7 +124,7 @@
         <td>[[ app.created_at ]]</td>
         <td>[[ app.updated_at ]]</td>
         <td>[[ app.region.name ]]</td>
-        <td>
+        <td style="text-align: center">
           <button v-on:click="getlogs(app)" style="background-color: #afa">
             Logs
           </button>
@@ -138,7 +143,7 @@
       </tr>
       <tr v-if="app.builds">
         <td colspan="9">
-          <div style="max-height: 200px; overflow-y: scroll; max-width: 100%">
+          <div style="max-height: 100px; overflow-y: scroll; max-width: 1100px">
             <table class="logtable">
               <tr v-for="item in app.builds.slice().reverse()">
                 <td>[[ item.created_at ]]</td>
@@ -151,10 +156,14 @@
       </tr>
       <tr v-if="app.logs">
         <td colspan="9">
-          <div style="max-height: 400px; overflow-y: scroll; max-width: 100%">
+          <div style="max-height: 400px; overflow: scroll; max-width: 1100px">
             <table class="logtable">
               <tr v-for="item in app.logs.logItems.slice().reverse()">
-                <td>[[ item.time.replace("T", " ") ]]</td>
+                <td>
+                  <span style="color: #077">[[ item.time.split("T")[0] ]]</span>
+                  <br />
+                  <span>[[ item.time.split("T")[1] ]]</span>
+                </td>
                 <td>[[ item.dyno ]]</td>
                 <td>[[ item.content ]]</td>
               </tr>
@@ -205,6 +214,9 @@
 
   const appConfig = {
       methods: {
+          getalllogs(){
+            for(const app of this.apps) this.getlogs(app)
+          },
           buildApp(name, url, token){
               return new Promise(resolve => {
                   post("/buildapp", {name, url, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
