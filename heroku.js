@@ -138,6 +138,7 @@ function getLogs(name, token, lines, tail) {
     ).then((json) => {
       fetchText(json.logplex_url)
         .then((text) => {
+          console.log("fetched logs text size", text.length);
           json.logText = text;
           json.logLines = text
             .replaceAll("\r", "")
@@ -155,6 +156,7 @@ function getLogs(name, token, lines, tail) {
           resolve(json);
         })
         .catch((err) => {
+          console.log("error fetching log text", err);
           json.error = err;
           json.logText = err;
           json.logLines = [];
