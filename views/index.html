@@ -104,7 +104,14 @@
       :style="`background-color: ${appbckgs[app.herokuIndex]};`"
     >
       <td>[[ app.herokuName ]]</td>
-      <td>[[ app.name ]]</td>
+      <td>
+        <a
+          rel="noopener noreferrer"
+          target="_blank"
+          :href="`https://${app.name}.herokuapp.com`"
+          >[[ app.name ]]</a
+        >
+      </td>
       <td>[[ app.id ]]</td>
       <td>[[ app.created_at ]]</td>
       <td>[[ app.updated_at ]]</td>
