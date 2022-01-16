@@ -13,6 +13,7 @@ const {
   delApp,
   getAllTokens,
   getLogs,
+  getBuilds,
 } = require("./heroku");
 
 nunjucks.configure("views", {
@@ -55,6 +56,17 @@ app.post("/getlogs", (req, res) => {
 
   getLogs(req.body.name, req.body.token).then((logs) =>
     res.send(JSON.stringify(logs))
+  );
+});
+
+app.post("/getbuilds", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
+  getBuilds(req.body.name, req.body.token).then((builds) =>
+    res.send(JSON.stringify(builds))
   );
 });
 

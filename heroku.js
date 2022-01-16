@@ -106,6 +106,18 @@ function getLogs(name, token, lines, tail) {
   });
 }
 
+function getBuilds(name, token) {
+  return new Promise((resolve) => {
+    get(`apps/${name}/builds`, undefined, token).then((json) => {
+      if (require.main === module) {
+        console.log(json);
+      }
+
+      resolve(json);
+    });
+  });
+}
+
 function getApps(token) {
   return new Promise((resolve) => {
     get("apps", undefined, token).then((json) => {
@@ -186,6 +198,7 @@ if (require.main !== module) {
     createApp,
     delApp,
     getLogs,
+    getBuilds,
   };
 } else {
   console.log("heroku command");
@@ -225,6 +238,8 @@ if (require.main !== module) {
     console.log(getAllTokens());
   } else if (command === "getlogs") {
     getLogs(appName);
+  } else if (command === "getbuilds") {
+    getBuilds(appName);
   } else {
     console.error("unknown command");
   }
