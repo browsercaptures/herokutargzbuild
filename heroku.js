@@ -24,16 +24,19 @@ function fetchText(url) {
         console.log("response", response);
         response
           .text()
-          .then((text) => resolve(text))
+          .then((text) => {
+            console.log("got text size", text.length);
+            resolve(text);
+          })
           .catch((err) => {
             const errMsg = `could not get response text ${err}`;
-            console.log(errMsg);
+            console.log("error", errMsg);
             reject(errMsg);
           });
       })
       .catch((err) => {
         const errMsg = `could not get response ${err}`;
-        console.log(errMsg);
+        console.log("error", errMsg);
         reject(errMsg);
       })
   );
