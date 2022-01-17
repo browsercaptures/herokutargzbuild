@@ -26,5 +26,21 @@
     {
         "app": "easychess",
         "url": "https://github.com/browsercaptures/easychess/blob/master/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "hypereasy",
+        "url": "https://github.com/browsercaptures/scalachess/blob/js/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "hypereasy2",
+        "url": "https://github.com/browsercaptures/scalachess/blob/js/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "amgilp",
+        "url": "https://github.com/browsercaptures/amgilp/blob/nunjucks/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "amgilp2",
+        "url": "https://github.com/browsercaptures/amgilp/blob/nunjucks/repo.tar.gz?raw=true"
     }
 ]
