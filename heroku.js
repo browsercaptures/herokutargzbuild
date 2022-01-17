@@ -258,6 +258,18 @@ function buildApp(name, url, token) {
   });
 }
 
+function restartAllDynos(name, token) {
+  return new Promise((resolve) => {
+    del(`apps/${name}/dynos`, undefined, token).then((json) => {
+      if (require.main === module) {
+        console.log(json);
+      }
+
+      resolve(json);
+    });
+  });
+}
+
 function getAllTokens() {
   const tokensByName = {};
   const tokensByToken = {};
@@ -292,6 +304,7 @@ if (require.main !== module) {
     getBuilds,
     buildApp,
     setConfig,
+    restartAllDynos,
   };
 } else {
   console.log("heroku command");
@@ -330,6 +343,8 @@ if (require.main !== module) {
     getLogs(appName);
   } else if (command === "getbuilds") {
     getBuilds(appName);
+  } else if (command === "restartall") {
+    restartAllDynos(appName);
   } else {
     console.error("unknown command");
   }

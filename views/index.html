@@ -109,6 +109,11 @@
           </button>
         </td>
         <td>
+          <button v-on:click="restartall(app)" style="background-color: #ffa">
+            Restart All
+          </button>
+        </td>
+        <td>
           <button v-on:click="delapp(app)" style="background-color: #faa">
             Delete
           </button>
@@ -116,8 +121,8 @@
         <!--<td><pre>[[ app ]]</pre></td>-->
       </tr>
       <tr v-if="app.builds">
-        <td colspan="9">
-          <div style="max-height: 100px; overflow-y: scroll; max-width: 1100px">
+        <td colspan="10">
+          <div style="max-height: 100px; overflow-y: scroll; max-width: 1200px">
             <table class="logtable">
               <tr v-for="item in app.builds.slice().reverse()">
                 <td>[[ item.created_at ]]</td>
@@ -129,8 +134,8 @@
         </td>
       </tr>
       <tr v-if="app.logs">
-        <td colspan="9">
-          <div style="max-height: 400px; overflow: scroll; max-width: 1100px">
+        <td colspan="10">
+          <div style="max-height: 400px; overflow: scroll; max-width: 1200px">
             <table class="logtable">
               <tr v-for="item in app.logs.logItems.slice().reverse()">
                 <td>
@@ -284,6 +289,17 @@
               //const w = window.open()
               //w.document.write("<pre>" + JSON.stringify(builds, null, 2) + "</pre>")
               app.builds = builds
+            })
+          },
+          restartAll(name, token){
+              return new Promise(resolve => {
+                  post("/restartall", {name, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
+              })
+          },
+          restartall(app){
+            this.restartAll(app.name, app.herokuToken).then(result => {
+              console.log(result)
+              window.alert("Restart API Response : " + JSON.stringify(result))
             })
           },
           createApp(name, token){

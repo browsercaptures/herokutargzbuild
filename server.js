@@ -18,6 +18,7 @@ const {
   getBuilds,
   buildApp,
   setConfig,
+  restartAllDynos,
 } = require("./heroku");
 
 nunjucks.configure("views", {
@@ -76,6 +77,17 @@ app.post("/getbuilds", (req, res) => {
 
   getBuilds(req.body.name, req.body.token).then((builds) =>
     res.send(JSON.stringify(builds))
+  );
+});
+
+app.post("/restartall", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
+  restartAllDynos(req.body.name, req.body.token).then((result) =>
+    res.send(JSON.stringify(result))
   );
 });
 
