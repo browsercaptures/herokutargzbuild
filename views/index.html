@@ -331,7 +331,15 @@
             const token = app.herokuToken
 
             const config = {}
-            config[configkey] = el.value
+            const value = el.value
+            config[configkey] = value
+
+            const confirm = window.prompt(`Type Key ( value = "${value}"" )`)
+
+            if(confirm !== configkey){
+              window.alert("Set Canceled")
+              return
+            }
 
             this.setConfig(name, config, token).then(config => {
               window.alert(JSON.stringify(config))
@@ -494,7 +502,7 @@
           delapp(app){
               const confirm = window.prompt("Type app name to delete")
               if(confirm !== app.name){
-                window.alert("Delete canceled!")
+                window.alert("Deletion Canceled")
                 return
               }
               this.delApp(app.name, app.herokuToken).then(result => {
