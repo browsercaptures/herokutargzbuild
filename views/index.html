@@ -109,6 +109,11 @@
           </button>
         </td>
         <td>
+          <button v-on:click="getconfig(app)" style="background-color: #aff">
+            Config
+          </button>
+        </td>
+        <td>
           <button v-on:click="restartall(app)" style="background-color: #ffa">
             Restart All
           </button>
@@ -121,8 +126,8 @@
         <!--<td><pre>[[ app ]]</pre></td>-->
       </tr>
       <tr v-if="app.builds">
-        <td colspan="10">
-          <div style="max-height: 100px; overflow-y: scroll; max-width: 1200px">
+        <td colspan="11">
+          <div style="max-height: 100px; overflow-y: scroll; max-width: 1250px">
             <table class="logtable">
               <tr v-for="item in app.builds.slice().reverse()">
                 <td>[[ item.created_at ]]</td>
@@ -133,9 +138,64 @@
           </div>
         </td>
       </tr>
+      <tr v-if="app.config">
+        <td colspan="11">
+          <div style="max-height: 400px; overflow-y: scroll; max-width: 1250px">
+            <button
+              style="margin-bottom: 5px; background-color: #ffa"
+              v-on:click="addconfig(app)"
+            >
+              Add Config Var
+            </button>
+            <table class="logtable">
+              <tr v-for="(value, key) in app.config">
+                <td
+                  style="cursor: pointer"
+                  v-on:click="copy"
+                  :appname="app.name"
+                  :configkey="key"
+                >
+                  [[ key ]]
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    style="
+                      width: 800px;
+                      font-family: monospace;
+                      color: #070;
+                      font-weight: bold;
+                    "
+                    :ref="app.name + key"
+                    :value="value"
+                  />
+                </td>
+                <td>
+                  <button
+                    style="background-color: #ffa"
+                    :appname="app.name"
+                    :configkey="key"
+                    v-on:click="setconfigkey"
+                  >
+                    Set
+                  </button>
+                  <button
+                    style="background-color: #faa; margin-left: 10px"
+                    :appname="app.name"
+                    :configkey="key"
+                    v-on:click="delconfigkey"
+                  >
+                    Del
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>
       <tr v-if="app.logs">
-        <td colspan="10">
-          <div style="max-height: 400px; overflow: scroll; max-width: 1200px">
+        <td colspan="11">
+          <div style="max-height: 400px; overflow: scroll; max-width: 1250px">
             <table class="logtable">
               <tr v-for="item in app.logs.logItems.slice().reverse()">
                 <td>
@@ -225,6 +285,85 @@
 
   const appConfig = {
       methods: {
+          addconfig(app){
+            const name = app.name
+            const token = app.herokuToken
+
+            const key = window.prompt("KEY")
+
+            if(key){
+              const value = window.prompt("VALUE")
+
+              const config = {}
+
+              config[key] = `${value}`
+
+              this.setConfig(name, config, token).then(config => {
+                window.alert(JSON.stringify(config))
+
+                this.getconfig(app)
+              })
+            }
+          },
+          copy(ev){
+            const appname = ev.target.getAttribute("appname")
+            const configkey = ev.target.getAttribute("configkey")
+            const el = this.$refs[appname + configkey][0]
+            setTimeout(()=>{
+              el.select()
+
+              document.execCommand("copy")
+            },0)
+          },
+          setConfig(name, config, token){
+            return new Promise(resolve => {
+                post("/setconfig", {name, config, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
+            })
+          },
+          setconfigkey(ev){
+            const appname = ev.target.getAttribute("appname")
+            const configkey = ev.target.getAttribute("configkey")
+            const el = this.$refs[appname + configkey][0]
+
+            const app = this.apps.find(app => app.name === appname)
+
+            const name = app.name
+            const token = app.herokuToken
+
+            const config = {}
+            config[configkey] = el.value
+
+            this.setConfig(name, config, token).then(config => {
+              window.alert(JSON.stringify(config))
+
+              this.getconfig(app)
+            })
+          },
+          delconfigkey(ev){
+            const appname = ev.target.getAttribute("appname")
+            const configkey = ev.target.getAttribute("configkey")
+
+            const confirm = window.prompt("Type Key")
+
+            if(confirm !== configkey){
+              window.alert("Deletion Canceled")
+              return
+            }
+
+            const app = this.apps.find(app => app.name === appname)
+
+            const name = app.name
+            const token = app.herokuToken
+
+            const config = {}
+            config[configkey] = null
+
+            this.setConfig(name, config, token).then(config => {
+              window.alert(JSON.stringify(config))
+
+              this.getconfig(app)
+            })
+          },
           getalllogs(){
             for(const app of this.apps) this.getlogs(app)
           },
@@ -289,6 +428,16 @@
               //const w = window.open()
               //w.document.write("<pre>" + JSON.stringify(builds, null, 2) + "</pre>")
               app.builds = builds
+            })
+          },
+          getConfig(name, token){
+              return new Promise(resolve => {
+                  post("/getconfig", {name, token, adminPass: localStorage.getItem("adminpass")}).then(json => resolve(json))
+              })
+          },
+          getconfig(app){
+            this.getConfig(app.name, app.herokuToken).then(config => {
+              app.config = config
             })
           },
           restartAll(name, token){

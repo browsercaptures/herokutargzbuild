@@ -16,6 +16,7 @@ const {
   getAllTokens,
   getLogs,
   getBuilds,
+  getConfig,
   buildApp,
   setConfig,
   restartAllDynos,
@@ -77,6 +78,28 @@ app.post("/getbuilds", (req, res) => {
 
   getBuilds(req.body.name, req.body.token).then((builds) =>
     res.send(JSON.stringify(builds))
+  );
+});
+
+app.post("/getconfig", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
+  getConfig(req.body.name, req.body.token).then((config) =>
+    res.send(JSON.stringify(config))
+  );
+});
+
+app.post("/setconfig", (req, res) => {
+  if (!req.isAdmin) {
+    res.send(JSON.stringify({ error: "Not Authorized" }));
+    return;
+  }
+
+  setConfig(req.body.name, req.body.config, req.body.token).then((config) =>
+    res.send(JSON.stringify(config))
   );
 });
 

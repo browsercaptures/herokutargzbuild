@@ -121,6 +121,18 @@ function delApp(name, token) {
   });
 }
 
+function getConfig(name, token) {
+  return new Promise((resolve) => {
+    get(`apps/${name}/config-vars`, undefined, token).then((json) => {
+      if (require.main === module) {
+        console.log(json);
+      }
+
+      resolve(json);
+    });
+  });
+}
+
 function setConfig(name, configVars, token) {
   return new Promise((resolve) => {
     patch(`apps/${name}/config-vars`, configVars || config, token).then(
@@ -303,6 +315,7 @@ if (require.main !== module) {
     getLogs,
     getBuilds,
     buildApp,
+    getConfig,
     setConfig,
     restartAllDynos,
   };
@@ -331,6 +344,8 @@ if (require.main !== module) {
     buildApp(appName, targzurl);
   } else if (command === "schema") {
     getSchema();
+  } else if (command === "getconfig") {
+    getConfig(appName);
   } else if (command === "setconfig") {
     setConfig(appName);
   } else if (command === "getapps") {
