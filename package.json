@@ -47,7 +47,17 @@
       "SACCKEY2",
       "SACCKEY3",
       "SKIP_TOURNEYWATCH",
-      "TICK_INTERVAL"
+      "TICK_INTERVAL",
+      "HYPER_GITHUB_TOKEN",
+      "HYPER_LICHESS_BOT_CLIENT_ID",
+      "HYPER_LICHESS_BOT_CLIENT_SECRET",
+      "RESAVE",
+      "SAVE_UNINITIALIZED",
+      "HYPER_SITE_HOST",
+      "AMGILP_DISCORD_BOT_CLIEND_ID",
+      "AMGILP_DISCORD_BOT_TOKEN",
+      "LEADERBOARD_FILE",
+      "LOG_DISCORD"
     ]
   },
   "devDependencies": {
