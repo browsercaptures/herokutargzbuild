@@ -149,12 +149,7 @@
             </button>
             <table class="logtable">
               <tr v-for="(value, key) in app.config">
-                <td
-                  style="cursor: pointer"
-                  v-on:click="copy"
-                  :appname="app.name"
-                  :configkey="key"
-                >
+                <td style="cursor: pointer" v-on:click="copyconfigkey">
                   [[ key ]]
                 </td>
                 <td>
@@ -172,7 +167,15 @@
                 </td>
                 <td>
                   <button
-                    style="background-color: #ffa"
+                    style="background-color: #afa"
+                    :appname="app.name"
+                    :configkey="key"
+                    v-on:click="copy"
+                  >
+                    Copy
+                  </button>
+                  <button
+                    style="background-color: #ffa; margin-left: 10px"
                     :appname="app.name"
                     :configkey="key"
                     v-on:click="setconfigkey"
@@ -285,6 +288,17 @@
 
   const appConfig = {
       methods: {
+          copyconfigkey(ev){
+            setTimeout(()=>{
+              const range = document.createRange();
+              range.selectNodeContents(ev.target);
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(range);
+
+              document.execCommand("copy")
+            },0)
+          },
           addconfig(app){
             const name = app.name
             const token = app.herokuToken
