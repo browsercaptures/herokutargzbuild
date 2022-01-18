@@ -42,5 +42,13 @@
     {
         "app": "amgilp2",
         "url": "https://github.com/browsercaptures/amgilp/blob/nunjucks/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "amgilp",
+        "url": "https://github.com/hyperbotauthor/amgilp/blob/nunjucks/repo.tar.gz?raw=true"
+    },
+    {
+        "app": "amgilp2",
+        "url": "https://github.com/hyperbotauthor/amgilp/blob/nunjucks/repo.tar.gz?raw=true"
     }
 ]
